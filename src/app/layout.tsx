@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import ConfigureAmplify from "../../utils/configureAmplify";
-import Header from "./components/Header";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,7 +19,6 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} bg-gradient-to-b from-blue-50 to-blue-100`}>
         <ConfigureAmplify />
-        <Header /> {/* Add the Header component */}
         <main className="min-h-screen p-4">{children}</main>
       </body>
     </html>

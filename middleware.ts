@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { runWithAmplifyServerContext } from "./utils/utils";
 import { fetchAuthSession } from "aws-amplify/auth/server";
+import { runWithAmplifyServerContext } from "./utils/utils";
 
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
@@ -20,7 +20,6 @@ export async function middleware(request: NextRequest) {
   if (authenticated) {
     return response;
   }
-  console.log("Middleware - Authenticated:", authenticated);
   return NextResponse.redirect(new URL("/signup", request.url));
 }
 

@@ -1,38 +1,24 @@
 'use client'
-import { withAuthenticator } from "@aws-amplify/ui-react"
-import { AuthUser } from "aws-amplify/auth"
-import { redirect } from "next/navigation"
-import { useEffect, useState } from "react"
-import '@aws-amplify/ui-react/styles.css'
-import { fetchAuthSession } from "aws-amplify/auth"
+import { withAuthenticator } from "@aws-amplify/ui-react";
+import { AuthUser } from "aws-amplify/auth";
+import { redirect } from "next/navigation";
+import { useEffect, useState } from "react";
+import '@aws-amplify/ui-react/styles.css';
 
-const Signup = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
+const Signup = ({ user }: { user?: AuthUser }) => {
+  const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const session = await fetchAuthSession()
-        setIsAuthenticated(session.tokens !== undefined)
-      } catch (err) {
-        console.log(err)
-        setIsAuthenticated(false)
-      }
+    if (user) {
+      redirect('/');
+    } else {
+      setIsChecking(false);
     }
+  }, [user]);
 
-    checkAuth()
-  }, [])
+  if (isChecking) return <p>Checking authentication...</p>;
 
-  if (isAuthenticated === null) {
-    return null // or a loading spinner
-  }
+  return null;
+};
 
-  if (isAuthenticated) {
-    redirect('/')
-  }
-  console.log('Signup - isAuthenticated:', isAuthenticated)
-  const AuthenticatedSignup = withAuthenticator(() => null)
-  return <AuthenticatedSignup />
-}
-
-export default Signup
+export default withAuthenticator(Signup);
