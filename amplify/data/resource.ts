@@ -19,7 +19,7 @@ const schema = a.schema({
       location: a.string(),
       caseNumber: a.string(),
     })
-    .authorization((allow) => [allow.authenticated()]),
+    .authorization((allow) => [allow.owner()]),
 });
 
 export type Schema = ClientSchema<typeof schema>;
@@ -27,7 +27,7 @@ export type Schema = ClientSchema<typeof schema>;
 export const data = defineData({
   schema,
   authorizationModes: {
-    defaultAuthorizationMode: "identityPool",
+    defaultAuthorizationMode: "userPool",
   },
 });
 

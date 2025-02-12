@@ -4,7 +4,6 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
-import FileUpload from "./FileUpload";
 import { generateClient } from 'aws-amplify/data';
 import type { Schema } from '../../../amplify/data/resource';
 
@@ -23,19 +22,24 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 const client = generateClient<Schema>({
-  authMode: 'identityPool',
+  authMode: 'userPool',
 });
 
-export default function ServiceRequestForm() {
+type ServiceRequestFormProps = {
+  onSubmit: (data: any) => void;
+};
+
+export default function ServiceRequestForm({ onSubmit }: ServiceRequestFormProps) {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
 
-  const onSubmit: SubmitHandler<FormData> = async (data) => {
+  const onSubmitForm: SubmitHandler<FormData> = async (data) => {
     const caseNumber = uuidv4();
     const resolutionDate = calculateResolutionDate(data.creationDate, data.severity);
 
@@ -44,9 +48,11 @@ export default function ServiceRequestForm() {
       caseNumber,
       resolutionDate,
     };
-    console.log("Submitting data:", requestData);
+
     try {
       await client.models.ServiceRequest.create(requestData);
+      onSubmit(requestData); // Call the onSubmit prop
+      reset(); // Reset the form
     } catch (error) {
       console.error("Error submitting request:", error);
     }
@@ -61,89 +67,105 @@ export default function ServiceRequestForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-6 bg-gray-100 rounded-md border-2 border-dotted border-gray-300">
-      <div className="flex space-x-4">
-        <label className="w-60 text-gray-700 text-right">Service Request Name</label>
-        <input
-          {...register("serviceName")}
-          className="flex-1 p-2 border-2 border-gray-300 rounded-md"
-        />
-      </div>
-      {errors.serviceName && <span className="text-red-500">{errors.serviceName.message}</span>}
+    <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Service Name */}
+        <div className="relative">
+          <label className="absolute top-0 left-2 bg-white px-1 text-sm text-gray-600">
+            Service Request Name
+          </label>
+          <input
+            {...register("serviceName")}
+            className="w-full p-4 border-2 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200"
+          />
+        </div>
 
-      <div className="flex space-x-4">
-        <label className="w-60 text-gray-700 text-right">Service Request Description</label>
+        {/* Reporter Name */}
+        <div className="relative">
+          <label className="absolute top-0 left-2 bg-white px-1 text-sm text-gray-600">Reporter Name</label>
+          <input
+            {...register("reporterName")}
+            className="w-full text-sm p-4 border-2 border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200"
+          />
+          {errors.reporterName && <p className="text-red-500 text-sm">{errors.reporterName.message}</p>}
+        </div>
+      </div>
+
+      {/* Description */}
+      <div className="relative">
+        <label className="absolute top-0 left-2 bg-white px-1 text-sm text-gray-600">Description</label>
         <textarea
           {...register("description")}
-          className="flex-1 p-2 border-2 border-gray-300 rounded-md"
+          className="w-full p-4 text-sm border-2 border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200"
         />
+        {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
       </div>
-      {errors.description && <span className="text-red-500">{errors.description.message}</span>}
 
-      <div className="flex space-x-4">
-        <label className="w-60 text-gray-700 text-right">Creation Date:</label>
-        <input
-          type="date"
-          {...register("creationDate")}
-          className="flex-1 p-2 border-2 border-gray-300 rounded-md"
-        />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Creation Date */}
+        <div className="relative">
+          <label className="absolute top-0 left-2 bg-white px-1 text-sm text-gray-600">Creation Date</label>
+          <input
+            type="date"
+            {...register("creationDate")}
+            className="w-full p-4 text-sm border-2 text-gray-600 border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200"
+          />
+          {errors.creationDate && <p className="text-red-500 text-sm">{errors.creationDate.message}</p>}
+        </div>
+
+        {/* Resolution Date */}
+        <div className="relative">
+          <label className="absolute top-0 left-2 bg-white px-1 text-sm text-gray-600">Resolution Date</label>
+          <input
+            type="date"
+            {...register("resolutionDate")}
+            className="w-full p-4 text-sm border-2 text-gray-600 border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200"
+          />
+          {errors.resolutionDate && <p className="text-red-500 text-sm">{errors.resolutionDate.message}</p>}
+        </div>
       </div>
-      {errors.creationDate && <span className="text-red-500">{errors.creationDate.message}</span>}
 
-      <div className="flex space-x-4">
-        <label className="w-60 text-gray-700 text-right">Severity</label>
-        <select
-          {...register("severity")}
-          className="flex-1 p-2 border-2 border-gray-300 rounded-md"
-        >
-          <option value="Low">Low</option>
-          <option value="Medium">Medium</option>
-          <option value="High">High</option>
-        </select>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Severity */}
+        <div className="relative">
+          <label className="absolute top-0 left-2 bg-white px-1 text-sm text-gray-600">Severity</label>
+          <select
+            {...register("severity")}
+            className="w-full p-4 border-2 text-sm text-gray-600 border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200"
+          >
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
+          {errors.severity && <p className="text-red-500 text-sm">{errors.severity.message}</p>}
+        </div>
+
+        {/* Contact Email */}
+        <div className="relative">
+          <label className="absolute top-0 left-2 bg-white px-1 text-sm text-gray-600">Contact Email</label>
+          <input
+            type="email"
+            {...register("contactEmail")}
+            className="w-full p-3 text-sm text-gray-600 border-2 border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200"
+          />
+          {errors.contactEmail && <p className="text-red-500 text-sm">{errors.contactEmail.message}</p>}
+        </div>
       </div>
-      {errors.severity && <span className="text-red-500">{errors.severity.message}</span>}
 
-      <div className="flex space-x-4">
-        <label className="w-60 text-gray-700 text-right">Resolution Date:</label>
-        <input
-          type="date"
-          {...register("resolutionDate")}
-          className="flex-1 p-2 border-2 border-gray-300 rounded-md"
-        />
-      </div>
-      {errors.resolutionDate && <span className="text-red-500">{errors.resolutionDate.message}</span>}
-
-      <div className="flex space-x-4">
-        <label className="w-60 text-gray-700 text-right">Reporter Name</label>
-        <input
-          {...register("reporterName")}
-          className="flex-1 p-2 border-2 border-gray-300 rounded-md"
-        />
-      </div>
-      {errors.reporterName && <span className="text-red-500">{errors.reporterName.message}</span>}
-
-      <div className="flex space-x-4">
-        <label className="w-60 text-gray-700 text-right">Contact Information</label>
-        <input
-          type="email"
-          {...register("contactEmail")}
-          className="flex-1 p-2 border-2 border-gray-300 rounded-md"
-        />
-      </div>
-      {errors.contactEmail && <span className="text-red-500">{errors.contactEmail.message}</span>}
-
-      <div className="flex space-x-4">
-        <label className="w-60 text-gray-700 text-right">Location</label>
+      {/* Location */}
+      <div className="relative">
+        <label className="absolute top-0 left-2 bg-white px-1 text-sm text-gray-600">Location</label>
         <input
           {...register("location")}
-          className="flex-1 p-2 border-2 border-gray-300 rounded-md"
+          className="w-full p-4 text-sm border-2 border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200"
         />
+        {errors.location && <p className="text-red-500 text-sm">{errors.location.message}</p>}
       </div>
-      {errors.location && <span className="text-red-500">{errors.location.message}</span>}
-      {/* <FileUpload /> */}
+
+      {/* Submit Button */}
       <button
         type="submit"
-        className="px-6 py-2 mt-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+        className="w-1/4 bg-gradient-to-r from-blue-500 to-orange-500 text-white text-sm px-6 py-2 rounded-[30px] transition-transform transform hover:scale-105 shadow-md"
       >
         Submit
       </button>

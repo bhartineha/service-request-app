@@ -19,7 +19,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} bg-gradient-to-b from-blue-50 to-blue-100`}>
         <ConfigureAmplify />
-        <main className="min-h-screen p-4">{children}</main>
+        <main >{children}</main>
       </body>
     </html>
   );
