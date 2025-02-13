@@ -23,12 +23,21 @@ export default function ServiceRequestTable({ serviceRequests }: ServiceRequestT
   ];
 
   return (
-    <div className="ag-theme-alpine" style={{ minHeight: 200, height:300, width: "100%" }}>
-      <h1>Tickets</h1>
+    <div className="ag-theme-alpine bg-white shadow-md rounded-lg px-8" style={{ height: "calc(100vh - 200px)", width: "100%" }}>
+      <div className="mb-4">
+        <h2 className="text-xl font-semibold text-gray-800">Service Requests Overview</h2>
+        <p className="text-sm text-gray-600">Manage and track all active service requests efficiently.</p>
+      </div>
       <AgGridReact
         rowData={serviceRequests}
         columnDefs={columnDefs}
-        modules={[ClientSideRowModelModule]} 
+        modules={[ClientSideRowModelModule]}
+        domLayout="autoHeight" // Adjust height dynamically
+        defaultColDef={{
+          flex: 1, // Make columns flexible
+          minWidth: 150, // Minimum column width
+          resizable: true, // Allow column resizing
+        }}
       />
     </div>
   );

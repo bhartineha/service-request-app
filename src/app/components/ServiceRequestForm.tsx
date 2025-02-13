@@ -1,4 +1,4 @@
-"use client"; // Required for client-side interactivity
+"use client"; 
 
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -6,6 +6,8 @@ import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
 import { generateClient } from 'aws-amplify/data';
 import type { Schema } from '../../../amplify/data/resource';
+import { useRouter } from 'next/navigation';
+import { useState } from "react";
 
 // Zod schema for form validation
 const schema = z.object({
@@ -25,11 +27,9 @@ const client = generateClient<Schema>({
   authMode: 'userPool',
 });
 
-type ServiceRequestFormProps = {
-  onSubmit: (data: any) => void;
-};
-
-export default function ServiceRequestForm({ onSubmit }: ServiceRequestFormProps) {
+export default function ServiceRequestForm() {
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     register,
     handleSubmit,
@@ -50,11 +50,16 @@ export default function ServiceRequestForm({ onSubmit }: ServiceRequestFormProps
     };
 
     try {
+      setIsSubmitting(true);
       await client.models.ServiceRequest.create(requestData);
-      onSubmit(requestData); // Call the onSubmit prop
       reset(); // Reset the form
+      // Delay routing for a few seconds
+      setTimeout(() => {
+        router.push('/servicerequesttable'); // Redirect to the service request page
+      }, 3000); // 3 seconds delay
     } catch (error) {
       console.error("Error submitting request:", error);
+      setIsSubmitting(false);
     }
   };
 
@@ -166,9 +171,16 @@ export default function ServiceRequestForm({ onSubmit }: ServiceRequestFormProps
       <button
         type="submit"
         className="w-1/4 bg-gradient-to-r from-blue-500 to-orange-500 text-white text-sm px-6 py-2 rounded-[30px] transition-transform transform hover:scale-105 shadow-md"
+        disabled={isSubmitting}
       >
-        Submit
+        {isSubmitting ? "Submitting..." : "Submit"} 
       </button>
+      {/* Display message below the button */}
+      {isSubmitting && (
+        <p className="text-sm text-orange-600 mt-2">
+          Page is routing to Service Request Table in a few seconds...
+        </p>
+      )}
     </form>
   );
 }

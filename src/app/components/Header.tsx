@@ -1,8 +1,6 @@
-'use client';
-
-import Logout from './Logout';
 import Link from 'next/link';
 import Image from 'next/image';
+import Logout from './Logout'; // Ensure this is the correct path to your Logout component
 
 const Header = () => {
   return (
@@ -19,7 +17,14 @@ const Header = () => {
           </div>
         </Link>
 
-        <div>
+        <div className="flex items-center space-x-6">
+          {/* Add the "Service Request" link */}
+          <Link href="/servicerequesttable">
+            <span className="bg-gradient-to-r from-blue-500 to-orange-500 text-white text-sm px-6 py-2 rounded-[30px] transition-transform transform hover:scale-105 shadow-md cursor-pointer">
+              Service Requests
+            </span>
+          </Link>
+
           <Logout />
         </div>
       </div>
