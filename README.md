@@ -4,6 +4,8 @@
 
 The Service Request Tracker is a front-end application built using AWS Amplify that allows authenticated users to submit and manage service requests. The application integrates with Amazon DynamoDB for storing and retrieving service request data. It includes user authentication, form validation, and dynamic data display.
 
+live-url - https://master.d3tshit0asx7mc.amplifyapp.com/
+
 # Key Features
   # User Authentication:
 
@@ -57,4 +59,10 @@ The Service Request Tracker is a front-end application built using AWS Amplify t
   2. Install Dependencies:
      npm install
 
-  
+  ![Screenshot 2025-02-13 at 11 46 42 AM](https://github.com/user-attachments/assets/c48ac8b6-38d2-4998-a8ac-cf2befdf39e9)
+![Screenshot 2025-02-13 at 11 47 07 AM](https://github.com/user-attachments/assets/0be6b979-4b1d-43b4-ab7d-c60a20f5a2ad)
+![Screenshot 2025-02-13 at 11 46 28 AM](https://github.com/user-attachments/assets/4d498c9e-12f4-490d-ac0c-6a87b7a7a4f4)
+
+
+
+
