@@ -2,7 +2,7 @@ import ServiceRequestForm from "./components/ServiceRequestForm";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen ">
       
       <div className="max-w-4xl mx-auto px-6 py-10 space-y-8 text-center pt-32">
         <h1 className="text-2xl font-bold text-orange-500">Welcome to the Service Request Tracker!</h1>

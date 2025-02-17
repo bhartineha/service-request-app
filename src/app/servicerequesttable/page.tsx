@@ -33,7 +33,7 @@ export default function ServiceRequestPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-20"> 
+    <div className="min-h-screen pt-20"> 
       <div className="px-6 py-10 space-y-8">
         <button
           onClick={() => router.back()} 

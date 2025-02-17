@@ -20,7 +20,13 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} bg-gradient-to-b from-blue-50 to-blue-100`}>
         <ConfigureAmplify />
-        <main >
+        <main 
+          style={{
+            backgroundImage: `url('https://service-portal-docs.s3.us-east-1.amazonaws.com/backdrop.jpg')`,
+            backgroundSize: 'cover', // Ensures the image covers the entire element
+            backgroundPosition: 'center', // Centers the image
+            backgroundRepeat: 'no-repeat', // Prevents the image from repeating
+          }}>
           <Header />
           {children}
           </main>

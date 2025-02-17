@@ -147,7 +147,7 @@ export default function ServiceRequestForm() {
 
         {/* Contact Email */}
         <div className="relative">
-          <label className="absolute top-0 left-2 bg-white px-1 text-sm text-gray-600">Contact Email</label>
+          <label className="absolute top-0 left-2 bg-white px-1 text-xs text-gray-600">Contact Email</label>
           <input
             type="email"
             {...register("contactEmail")}
