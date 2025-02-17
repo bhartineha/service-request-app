@@ -12,7 +12,7 @@ const Signup = ({ user }: { user?: AuthUser }) => {
       redirect('/');
     } 
    
-  }, []);
+  });
 
   return null;
 };
